@@ -107,7 +107,7 @@ jobs:
              cd frontend
              npm install
              npm audit fix --force --audit-level=critical
-             npm audit fix --force --audit-level=critical
+             npm audit fix
              npm audit --audit-level=critical
 
   scan-backend:
@@ -118,11 +118,10 @@ jobs:
       - restore_cache:
           keys: [back-deps]
       - run:
-          name: Front-end scan test
+          name: back-end scan test
           command: |
              cd back
              npm install
-             npm audit fix --force --audit-level=critical
              npm audit fix --force --audit-level=critical
              npm audit fix --force --audit-level=critical
              npm audit --audit-level=critical
