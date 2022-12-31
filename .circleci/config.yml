@@ -220,6 +220,7 @@ jobs:
       - install_awscli
       - install_ansible
       - run:
+          no_output_timeout: 30m
           name: Configure server
           command: |
             cd .circleci/ansible
