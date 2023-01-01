@@ -336,28 +336,26 @@ jobs:
       - image: cimg/base:stable
     steps:
       - checkout
-      - install_awscli
-      - install_nodejs
       - run:
           name: Install dependencies
           command: |
             # your code here
             sudo apt install -y curl
+      - install_awscli
+      - install_nodejs
       - run:
           name: Backend smoke test.
           command: |
-            # your code here
-            BACKEND_IP=$(aws ec2 describe-instances \
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
-            API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            if curl "${API_URL}/api/status" | grep "ok"
+            export API_URL=http://${BACKEND_PUBLIC_IP}:3030
+            if curl -s $API_URL/api/status | grep "ok"
             then
-                exit 0
+              exit 0
             else
-                exit 1
+              exit 1
             fi
       - run:
           name: Frontend smoke test.
