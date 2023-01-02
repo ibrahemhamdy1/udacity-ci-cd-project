@@ -33,7 +33,7 @@ commands:
             sudo n 13.8.0
 
   destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    description: Destroy back-end and frontend cloudformation stacks given a workflow ID.
     parameters:
       Workflow_ID:
         type: string
@@ -46,9 +46,9 @@ commands:
             # Empty frontend bucket
             aws s3 rm s3://udapeople-<<parameters.Workflow_ID>> --recursive
             # Delete Frontend stack
-            aws cloudformation delete-stack --stack-name udapeople-front-end-<<parameters.Workflow_ID>>
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.Workflow_ID>>
             # Delete Backend stack
-            aws cloudformation delete-stack --stack-name udapeople-back-end-<<parameters.Workflow_ID>>
+            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.Workflow_ID>>
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -81,7 +81,7 @@ jobs:
       - restore_cache:
           keys: [frontend-build]
       - run:
-          name: Build front-end
+          name: Build frontend
           command: |
             cd frontend
             npm install
@@ -191,15 +191,15 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
               --tags project=udapeople \
-              --stack-name "udapeople-back-end-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
-          name: Ensure front-end infrastructure exist
+          name: Ensure frontend infrastructure exist
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/frontend.yml \
               --tags project=udapeople \
-              --stack-name "udapeople-front-end-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
       - run:
           name: Add back-end ip to ansible inventory
